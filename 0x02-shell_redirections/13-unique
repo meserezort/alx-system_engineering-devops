@@ -1,2 +1,2 @@
 #!/bin/bash
-chmod u+x 13-unique
+sort | uniq -u
