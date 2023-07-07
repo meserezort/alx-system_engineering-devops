@@ -1,25 +1,21 @@
 #!/usr/bin/env bash
-# Displays Imformation about subdomains
+# Extracts information from dig of website and prints out result
 
-# shellcheck disable=SC2086
-
-# Usage:
-# (1) ./0-world_wide_web 3akare.tech
-# (2) ./0-world_wide_web 3akare.tech web-02
-
-
-if [ "$#" = 1 ]
-then
-    subdomains=("www" "lb-01" "web-01" "web-02")
-    for sub_domain in "${subdomains[@]}"
+func1 () {
+    if [ $# -eq 1 ]; then
+	subs="www lb-01 web-01 web-02"
+    else
+	subs="$2"
+    fi
+    for bus in $subs
     do
-        record_type=$(dig "$sub_domain.$1" | grep -A1 'ANSWER SECTION:' | tail -1 | awk '{print $4}')
-        ip_address=$(dig "$sub_domain.$1" | grep -A1 'ANSWER SECTION:' | tail -1 | awk '{print $5}')
-        echo "The subdomain $sub_domain is a $record_type record and points to $ip_address"
+	dig "$bus"."$1" | awk '!/;/' | grep '[[:blank:]]' |\
+awk -v bus="$bus" '{ print "The subdomain " bus " is a " $4 " record and points to " $5 }' ; echo | grep '[[:blank:]]'
     done
-elif [ "$#" = 2 ]
-then
-    record_type=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tail -1 | awk '{print $4}')
-    ip_address=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tail -1 | awk '{print $5}')
-    echo "The subdomain $2 is a $record_type record and points to $ip_address"
+}
+
+if [ "$#" -eq 1 ]; then
+    func1 "$1"
+else
+    func1 "$1" "$2"
 fi
