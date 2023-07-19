@@ -2,3 +2,7 @@
 Host *
       PasswordAuthentication no
       IdentifyFile ~/.ssh/school
+sendEnv LANG LC_*
+HashKnownHosts yes
+GSSAPIAuthentication yes
+GSSAPIDelegatecredentials no
