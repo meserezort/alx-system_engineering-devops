@@ -1,0 +1,46 @@
+Postmortem
+Issue Summary
+Issue Summary: Duration: Jul 25, 2023, 10:00 AM — Jul 26, 2023, 2:00 PM (UTC) Impact: Slow response times and a partial service disruption were caused by the web application's sporadic outages. During this time, 10% of users were impacted.
+
+Timeline:
+•	Jul 25, 2023, 10:15 AM (UTC): The problem was found when monitoring alerts showed a marked increase in response time.
+•	The engineering team immediately started investigating the issue, suspecting a potential database problem.
+•	Misleadingly, the investigation initially focused on the database cluster due to a recent deployment that involved schema changes.
+•	The incident was escalated to the database administration team to assess the potential impact of the schema changes on the cluster’s performance.
+•	Further investigation revealed no abnormalities within the database cluster, prompting the team to explore other areas of the system.
+•	Jul 26, 2023, 12:30 PM (UTC): The root cause was identified as an overloaded cache layer, leading to increased latency and intermittent failures.
+•	The incident was escalated to the infrastructure team for immediate resolution.
+•	Jul 26, 2023, 2:00 PM (UTC): The incident was resolved, and the web application’s performance returned to normal.
+•	The engineering team started looking into the issue right away because they thought it might be a database issue.
+•	Because of a recent deployment involving schema changes, the investigation was mistakenly initially concentrated on the database cluster.
+•	To determine whether the schema changes would have any negative effects on the cluster's performance, the incident was escalated to the database administration team.
+•	The team investigated other system components after further investigation found no anomalies in the database cluster.
+•	Jul 26, 2023, 12:30 PM (UTC): An overloaded cache layer, which causes increased latency and sporadic failures, was found to be the root cause.
+•	The infrastructure team was notified of the incident and instructed to take immediate action.
+•	Jul   26, 2023, 2:00 PM (UTC): The problem was fixed, and the web application's performance was back to normal.
+
+Root Cause and Resolution:
+Cache layer overload was the primary cause of the problem. Higher latency and intermittent failures were caused as a result of the cache being forced to remove frequently used data due to the system's increased load. The sudden increase in traffic was too much for the cache's eviction policy to handle.
+The infrastructure team improved the eviction policy and increased the cache's capacity to change the configuration and fix the problem. Additionally, a monitoring system was put in place to send out early alerts when the cache utilization reaches dangerously high levels. These steps were taken to avoid future instances of cache overload.
+
+Corrective and Preventative Measures: 
+Several steps will be taken in order to increase system stability overall:-
+•	Cache eviction policies should be reviewed and improved based on usage trends and anticipated traffic fluctuations.
+•	Scale the cache infrastructure: Examine the cache infrastructure as it is and decide whether more resources or distributed caching techniques are needed to handle peak loads.
+•	Improved monitoring and alerts: To quickly spot any anomalies, implement thorough monitoring across the entire web stack, including cache utilization, response times, and database performance.
+•	Load testing and capacity planning: Conduct routine load testing to simulate different traffic scenarios and make sure the system can handle increased loads without deteriorating performance.
+•	Streamline the escalation path and clearly define roles and responsibilities for incident response to improve the incident response process. This will ensure effective teamwork in high-stakes situations.
+Tasks to address the issue:
+
+•	Patch cache eviction policies: Modify cache eviction policies to prioritize frequently accessed data while taking memory 
+Constraints into account.
+•	Assess the capacity of the current cache infrastructure and 
+look into options for expanding or introducing distributed caching.
+•	Implement thorough monitoring: Set up a solution for monitoring cache usage, response times, and database performance, along with the appropriate alerts.
+•	Execute load testing scenarios to verify the system's  
+Performance   under various traffic conditions.
+•	Update incident response protocols, review them, and make improvements to the incident response process to ensure quick detection, investigation, and resolution of incidents in the future.
+
+By putting these corrective and preventative measures in place, we hope to improve the performance and dependability of our web application and lessen the likelihood and effects of similar incidents in the future.
+
+
